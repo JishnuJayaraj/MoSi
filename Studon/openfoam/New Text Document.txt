@@ -1,0 +1,16 @@
+1. rhoInf is the freestream density.
+2. magUinf is the magnitude of the freestream velocity.
+3. The source code for the forces and forceCoeffs are located, respectively, in OpenFOAM-1.6/src/postProcessing/forces/ and OpenFOAM-1.6/src/postProcessing/forceCoeffs/
+4. The equations of CL and CD are defined in OpenFOAM-1.6/src/postProcessing/forceCoeffs/forceCoeffs.C 
+
+location:
+/home/user/OpenFOAM/OpenFOAM-1.6/src/postProcessing/functionObjects/forces
+
+OpenFOAM first calculates a total force, by multiplying it with the directions of each component, this force is divided into its components (lift/drag). These components are then divided by the referenceDensity multiplied with the refArea which leads to CL and CD
+Hi, for calculating total Forces in OpenFOAM, integrated the pressure Field over the surfaces and projection of this forces in drag or lift direction Division Pdyn*Aref gives the cd and cl Coeff
+
+ total force on the cylinder comes from both pressure differences around the cylinder and from friction. The drag force (also called the in-line force) acts in the direction of the flow, while the lift force acts in the transverse direction.
+
+
+1st calc force---> then Cd
+force is  by pressure and friction
