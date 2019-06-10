@@ -87,6 +87,21 @@ surfaceScalarField phiAdj
     ),
     fvc::flux(UAdj)
 );
+
+volTensorField gradU
+(
+    IOobject
+    (
+        "gradU",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    fvc::grad(U)
+);
+
+
 //#include "createPhi.H"
 
 
