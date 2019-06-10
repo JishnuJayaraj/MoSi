@@ -23,7 +23,6 @@ boundaryField
     topBoundary
     {
         type            symmetry;
-       
     }
 
     upStream
@@ -32,23 +31,23 @@ boundaryField
         value           uniform (1 0 0);
     }
 
-   downStream
+    downStream
     {
         type            zeroGradient;
-
     }
 
-subBoundary
+    subBoundary
     {
         type            fixedValue;
         value           uniform (0 0 0);
-        
     }
+    
     frontAndBack
     {
         type            empty;
     }
-bottomSymmetry 
+    
+    bottomSymmetry 
     { 
         type            symmetryPlane; 
     } 
