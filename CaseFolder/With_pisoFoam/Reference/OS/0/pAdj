@@ -25,33 +25,30 @@ boundaryField
     topBoundary
     {
         type            symmetry;
-        
     }
 
     downStream
     {
         type            zeroGradient;
-        
     }
 
-   upStream
+    upStream
     {
-        
         type            fixedValue;
 	value		uniform 1000;
-        
     }
 
-subBoundary
+    subBoundary
     {
         type            zeroGradient;
-        
     }
+    
     frontAndBack
     {
         type            empty;
     }
-bottomSymmetry 
+    
+    bottomSymmetry 
     { 
         type            symmetryPlane; 
     } 
