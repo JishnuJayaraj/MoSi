@@ -22,10 +22,11 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    pisomosiFoam
+    pisoFoam
 
 Description
-    Transient solver for optimiser for the shape optimisation of submarine
+    Transient solver for incompressible, turbulent flow, using the PISO
+    algorithm.
 
     Sub-models include:
     - turbulence modelling, i.e. laminar, RAS or LES
@@ -88,18 +89,20 @@ int main(int argc, char *argv[])
 	Info<<"Creating boundary results for grad calculation..."<<endl;
 	fileName outputFile("BoundaryResults.txt");
 	OFstream os(outputFile);
-	os << "Position	  P	U	PAdj	UAdj	grad(U)\n"<<endl;
+	os << "Position	  U	PAdj	UAdj	grad(U)	  grad(UAdj)	facenormal\n"<<endl;
 	label inletPatchID = mesh.boundaryMesh().findPatchID("subBoundary"); //Patch identifier of the boundary condition
-        fvPatchScalarField subP = p.boundaryField()[inletPatchID];
+        
 	fvPatchVectorField subU = U.boundaryField()[inletPatchID];
 	fvPatchScalarField subPAdj = pAdj.boundaryField()[inletPatchID];
 	fvPatchVectorField subUAdj = UAdj.boundaryField()[inletPatchID];
 	fvPatchTensorField subgradU = gradU.boundaryField()[inletPatchID];
-        forAll(subP, faceI)  // Loop over each face of the patch
+	fvPatchTensorField subgradUAdj = gradUAdj.boundaryField()[inletPatchID];
+        forAll(subU, faceI)  // Loop over each face of the patch
         {
         vector pos(mesh.Cf().boundaryField()[inletPatchID][faceI]);
-        os<<"("<<pos[0]<<" "<<pos[1]<<")"<<" ("<<subP[faceI]<<") "<<subU[faceI]
-	<<" ("<<subPAdj[faceI]<<") "<<subUAdj[faceI]<<" "<<subgradU[faceI]<<" "<<endl;
+	vector nor(mesh.Sf().boundaryField()[inletPatchID][faceI]/mesh.magSf().boundaryField()[inletPatchID][faceI]);
+        os<<pos<<" "<<subU[faceI]<<" ("<<subPAdj[faceI]<<") "<<subUAdj[faceI]<<" "<<subgradU[faceI]<<" "<<
+	subgradUAdj[faceI]<<" "<<nor<<endl;
         
         }
 

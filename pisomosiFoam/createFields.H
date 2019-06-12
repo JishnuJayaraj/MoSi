@@ -88,6 +88,7 @@ surfaceScalarField phiAdj
     fvc::flux(UAdj)
 );
 
+Info<< "Reading/calculating grad(U)\n" << endl;
 volTensorField gradU
 (
     IOobject
@@ -99,6 +100,20 @@ volTensorField gradU
         IOobject::AUTO_WRITE
     ),
     fvc::grad(U)
+);
+
+Info<< "Reading/calculating grad(UAdj)\n" << endl;
+volTensorField gradUAdj
+(
+    IOobject
+    (
+        "gradUAdj",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    fvc::grad(UAdj)
 );
 
 
