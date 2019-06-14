@@ -1,13 +1,14 @@
 import fileinput
 import os, re, sys
+import numpy as np
 from pathlib import Path
 
 #Path Definitions
-Modpath     = '/home/prabhu/MoSi/CaseFolder/With_pisoFoam'
-Refpath     = '/home/prabhu/MoSi/CaseFolder/With_pisoFoam/Reference'
-Itpath      = '/home/prabhu/MoSi/CaseFolder/With_pisoFoam/Iteration_'
-NSpath      = '/home/prabhu/MoSi/CaseFolder/With_pisoFoam/Reference/NS'
-OSpath      = '/home/prabhu/MoSi/CaseFolder/With_pisoFoam/Reference/OS'
+Modpath     = '/home/aju/Seminar/With_pisoFoam'
+Refpath     = '/home/aju/Seminar/With_pisoFoam/Reference'
+Itpath      = '/home/aju/Seminar/With_pisoFoam/Iteration_'
+NSpath      = '/home/aju/Seminar/With_pisoFoam/Reference/NS'
+OSpath      = '/home/aju/Seminar/With_pisoFoam/Reference/OS'
 
 DragInitialX = 1
 for i in range(1):
@@ -53,8 +54,100 @@ for i in range(1):
     os.system('blockMesh')
     os.system('checkMesh')
     os.system('pisomosiFoam')
+       
+    # Calculation of new boundary Coordinates 
+    # viscosity
+    nu = .01
+    # weight = 1/w
+    weight = 0.00001
+
+    word = []
+    with open (Itpath+str(i+1)+'/OS/BoundaryResults.txt') as file:
+    #lines = file.readlines()
+    	for line in file:
+        #line = line.split(' ')
+        	word.append(re.findall(r'[^(())\t\n ]+',line))
         
+    #print(word)
+    del word[0]
+
+
+    flat_value = []
+    for sublist in word:
+    	for item in sublist:
+        	flat_value.append(item)
         
+    values = list(map(float,flat_value))
+
+    pos = []
+    for count, item in enumerate(values):
+    	if count == 0 and count == 1:
+        	pos.append(item)
+        
+    allitems = np.array(values)
+
+    indicespos = [0,1,2]
+    indicesU = [3,4,5]
+    indicesPadj = [6]
+    indicesUadj = [7,8,9]
+    indicesGradu = [10,11,12,13,14,15,16,17,18]
+    indicesGraduAdj = [19,20,21,22,23,24,25,26,27]
+    indicesNormal = [28,29,30]
+
+    lineSize = 31
+    nFaces = 40
+#print(list(allitems[indexes]))
+
+#indexes = list(np.asarray(indexes) + 31)
+#print(indexes)
+#print(list(allitems[indexes]))
+
+    global_Corrector = np.array([])
+    global_pos = np.array([])
+
+    for i in range(0,nFaces):
+    #print(list(allitems[indicespos = [0,1,2]]))
+    #indexes = list(np.asarray(indexes) + 31)
+    	pos = np.array(list(allitems[indicespos]))
+    	indicespos = list(np.asarray(indicespos) + lineSize)
+    
+    	U = np.array(list(allitems[indicesU]))
+    	indicesU = list(np.asarray(indicesU) + lineSize)
+    
+    	pAdj = np.array(list(allitems[indicesPadj]))
+    	indicesPadj = list(np.asarray(indicesPadj) + lineSize)
+    
+    	uAdj = np.array(list(allitems[indicesUadj]))
+    	indicesUadj = list(np.asarray(indicesUadj) + lineSize)
+    
+    	gradU = np.array(list(allitems[indicesGradu]))
+    	indicesGradu = list(np.asarray(indicesGradu) + lineSize)
+    
+    	gradUadj = np.array(list(allitems[indicesGraduAdj]))
+    	indicesGraduAdj = list(np.asarray(indicesGraduAdj) + lineSize)
+    
+    	normal = np.array(list(allitems[indicesNormal]))
+    	indicesNormal = list(np.asarray(indicesNormal) + lineSize)
+    
+    	u_Inner_uAdj = np.inner(U.reshape(1,-1).T, uAdj.reshape(1,-1).T)
+    	pAdj_Matrix = np.identity(3)*pAdj
+    	sym_GraduAdj = (gradUadj.reshape(3,3) + gradUadj.reshape(3,3).T)*nu
+    
+    	s = (u_Inner_uAdj + pAdj_Matrix + sym_GraduAdj).dot(normal.reshape(1,-1).T)
+    	corrector = weight*(gradU.reshape(3,3).T).dot(s)
+    
+    
+    	global_Corrector=np.append(global_Corrector,corrector)
+    	global_pos = np.append(global_pos,pos)
+    #print(np.inner(U,uAdj.T))
+    #print(U)
+    
+    updated_global_pos = global_pos - global_Corrector
+    print(updated_global_pos)
+
+
+
+  
         
         
         
