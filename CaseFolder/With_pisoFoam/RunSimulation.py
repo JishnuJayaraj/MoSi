@@ -6,7 +6,7 @@ from pathlib import Path
 import os, re, sys, math, fileinput
 
 #Path Definitions
-Modpath     = '/home/prabhu/PycharmProjects/MoSiSeminar'
+Modpath     = '/home/aju/Seminar/With_pisoFoam'
 Refpath     = Modpath+'/Reference'
 Itpath      = Modpath+'/Iteration_'
 NSpath      = Refpath+'/NS'
@@ -21,14 +21,15 @@ for i in range(2):
 	os.chdir(Itpath+str(i+1)+'/NS')
 
 	blockMeshDict = os.path.isfile(NSpath+'/system/blockMeshDict')
+	VertexList = ("1","2","4","5","6","7","8","9","10","11","20","21","23","24","25","26","27", "28","29","30")
 	if blockMeshDict:
 		if i != 0:
 			index = 0
 			flag = False
-			for vertex in range(30):
+			for vertex in VertexList:
 				f = open(Itpath+str(i+1)+"/NS/system/blockMeshDict", "r")
 				for line in f:
-					findText = '//Vertex_' + str(vertex + 1) + '*'
+					findText = '//Vertex_' + vertex + '*'
 					if findText in line:
 						replaceline = line
 						flag = True
@@ -78,7 +79,7 @@ for i in range(2):
 
 	# Calculation of new boundary Coordinates
 	nu = .01 # viscosity
-	weight = 0.00001 # weight = 1/w
+	weight = 0.0000006 # weight = 1/w
 
 
 	word = []
@@ -180,28 +181,24 @@ for i in range(2):
 
 	x_Vertex_10 = (facepoint_38[0]-facepoint_39[0])/(facepoint_38[1]-facepoint_39[1])*(-facepoint_39[1]) + facepoint_39[0]
 	Vertex_10 = np.array([x_Vertex_10,0,0])
-	Vertices = np.array([Vertex_4,Vertex_10])
-
+	
 	Vertex_5 = (facepoint_9 + facepoint_10)/2
-	Vertices = np.vstack([Vertices,Vertex_5])
-
+	
 	Vertex_6 = (facepoint_19 + facepoint_20)/2
-	Vertices = np.vstack([Vertices,Vertex_6])
-
+	
 	Vertex_8 = (facepoint_29 + facepoint_30)/2
-	Vertices = np.vstack([Vertices,Vertex_8])
-
+	
 	# Vertices of outer layer
 	Vertex_1 = np.array([Vertex_4[0]-outerLayer_t,0,0])
-	Vertices = np.vstack([Vertices,Vertex_1])
-
+	
 	x_Vertex_2 = Vertex_5[0]*(1+outerLayer_t/math.sqrt((Vertex_5[1])**2 +(Vertex_5[0])**2 ))
 	Vertex_2 = np.array([x_Vertex_2,Vertex_5[1]/Vertex_5[0]*x_Vertex_2,0])
-	Vertices = np.vstack([Vertices,Vertex_2])
-
+	
 	x_Vertex_9 = Vertex_8[0]*(1+outerLayer_t/math.sqrt((Vertex_8[1])**2 +(Vertex_8[0])**2 ))
 	Vertex_9 = np.array([x_Vertex_9,Vertex_8[1]/Vertex_8[0]*x_Vertex_9,0])
-	Vertices = np.vstack([Vertices,Vertex_9])
+	
+	
+	
 
 	if Vertex_6[0]!=0:
 			x_Vertex_7 = Vertex_6[0]*(1+outerLayer_t/math.sqrt((Vertex_6[1])**2 +(Vertex_6[0])**2 ))
@@ -209,20 +206,28 @@ for i in range(2):
 	else:
 			Vertex_7 = np.array([0,Vertex_6[1]+outerLayer_t,0])
 
-	Vertices = np.vstack([Vertices,Vertex_7])
-
+	
 	Vertex_11= np.array([Vertex_10[0]+outerLayer_t,0,0])
+	
+	Vertices = np.array([Vertex_1,Vertex_2])
+	Vertices = np.vstack([Vertices,Vertex_4])
+	Vertices = np.vstack([Vertices,Vertex_5])
+	Vertices = np.vstack([Vertices,Vertex_6])
+	Vertices = np.vstack([Vertices,Vertex_7])
+	Vertices = np.vstack([Vertices,Vertex_8])
+	Vertices = np.vstack([Vertices,Vertex_9])
+	Vertices = np.vstack([Vertices,Vertex_10])
 	Vertices = np.vstack([Vertices,Vertex_11])
 
-	zOffsetMatrix = np.array([[0,0,0.1],[0,0,0.1]])
+	zOffsetMatrix = np.array([[0,0,0.01],[0,0,0.01]])
 	for l in range(len(Vertices)-2):
-		zOffsetMatrix = np.vstack([zOffsetMatrix,np.array([0,0,0.1])])
+		zOffsetMatrix = np.vstack([zOffsetMatrix,np.array([0,0,0.01])])
 	Vertices = np.vstack([Vertices,Vertices+zOffsetMatrix])
 	Vertices = Vertices*10
 
 	os.chdir(Modpath)
 	cwd = os.getcwd()
-	print(cwd)
+	
 
 
 
