@@ -16,7 +16,7 @@ DragInitialX = 1
 forceResultfile = open("DragForce.dat","w+")
 forceResultfile.write("Iteration\tDragForce\n")
 
-for i in range(5):
+for i in range(2):
 	if Path(Itpath+str(i+1)).exists() == False:
 		os.mkdir('Iteration_'+str(i+1))
 		print('Iteration_'+str(i+1)+'Directory Created')
@@ -43,6 +43,27 @@ for i in range(5):
 				if flag == True:
 					s = open(Itpath+str(i+1)+"/NS/system/blockMeshDict").read()
 					StripVertex = ' '.join(map(str, Vertices[index]))
+					s = s.replace(replaceline, '(' + StripVertex + ') ' + findText + '\n')
+					f = open(Itpath+str(i+1)+"/NS/system/blockMeshDict", 'w')
+					f.write(s)
+					f.close()
+					index = index + 1
+					flag = False
+
+			index =0
+			flag = False
+			for vertex in boundaryVertexList:
+				f = open(Itpath+str(i+1)+"/NS/system/blockMeshDict", "r")
+				for line in f:
+					findText = '//Vertex_' + vertex + '*'
+					if findText in line:
+						replaceline = line
+						flag = True
+				f.close()
+
+				if flag == True:
+					s = open(Itpath+str(i+1)+"/NS/system/blockMeshDict").read()
+					StripVertex = ' '.join(map(str, boundaryVertices[index]))
 					s = s.replace(replaceline, '(' + StripVertex + ') ' + findText + '\n')
 					f = open(Itpath+str(i+1)+"/NS/system/blockMeshDict", 'w')
 					f.write(s)
@@ -358,7 +379,20 @@ for i in range(5):
 	for l in range(len(Vertices)-2):
 		zOffsetMatrix = np.vstack([zOffsetMatrix,np.array([0,0,zOffset])])
 	Vertices = np.vstack([Vertices,Vertices+zOffsetMatrix])
-	Vertices = Vertices
+	xLeft=-3
+	xRight= 5
+	yTop=5
+	yBottom=0
+	zOffsetMatrix = np.array([[0,0,zOffset],[0,0,zOffset]])
+	
+	boundaryVertexList = ("3","13","15","16","17","22","32","34","35","36")
+	boundaryVertices = np.array([[xLeft,Vertex_2[1],0],[xRight,Vertex_9[1],0]])
+	boundaryVertices = np.vstack([boundaryVertices,[Vertex_9[0],yTop,0]])
+	boundaryVertices = np.vstack([boundaryVertices,[Vertex_7[0],yTop,0]])
+	boundaryVertices = np.vstack([boundaryVertices,[Vertex_2[0],yTop,0]])
+	for l in range(len(boundaryVertices)-2):
+		zOffsetMatrix = np.vstack([zOffsetMatrix,np.array([0,0,zOffset])])
+	boundaryVertices = np.vstack([boundaryVertices,boundaryVertices+zOffsetMatrix])
 
 	os.chdir(Modpath)
 	cwd = os.getcwd()
