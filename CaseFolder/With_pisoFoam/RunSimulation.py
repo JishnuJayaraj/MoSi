@@ -13,7 +13,10 @@ NSpath      = Refpath+'/NS'
 OSpath      = Refpath+'/OS'
 
 DragInitialX = 1
-for i in range(2):
+forceResultfile = open("DragForce.dat","w+")
+forceResultfile.write("Iteration\tDragForce\n")
+
+for i in range(5):
 	if Path(Itpath+str(i+1)).exists() == False:
 		os.mkdir('Iteration_'+str(i+1))
 		print('Iteration_'+str(i+1)+'Directory Created')
@@ -22,10 +25,12 @@ for i in range(2):
 
 	blockMeshDict = os.path.isfile(NSpath+'/system/blockMeshDict')
 	VertexList = ("1","2","4","5","6","7","8","9","10","11","20","21","23","24","25","26","27", "28","29","30")
+	splineList = ("4 5","5 6","6 8","8 10","23 24","24 25","25 27","27 29","1 2","2 7","7 9","9 11","20 21","21 26","26 28","28 30")
 	if blockMeshDict:
 		if i != 0:
 			index = 0
 			flag = False
+			flagSpline = False
 			for vertex in VertexList:
 				f = open(Itpath+str(i+1)+"/NS/system/blockMeshDict", "r")
 				for line in f:
@@ -45,6 +50,117 @@ for i in range(2):
 					index = index + 1
 					flag = False
 
+			p = 0
+			count = 0
+			for spline in splineList:
+				f = open(Itpath + str(i + 1) + "/NS/system/blockMeshDict", "r")
+				for line in f:
+					findText = '//Spline ' + spline
+					if findText in line:
+						replaceline = line
+						flagSpline = True
+				f.close()
+
+				if flagSpline == True:
+					s = open(Itpath+str(i+1)+"/NS/system/blockMeshDict").read()
+					if count > 7 and count <= 11:
+						x0_int = updated_global_pos[p*3]*(outerLayer_t + math.sqrt(updated_global_pos[p*3+1]**2+updated_global_pos[p*3]**2))/math.sqrt(updated_global_pos[p*3+1]**2+updated_global_pos[p*3]**2)
+						y0_int = updated_global_pos[p*3+1] * x0_int / updated_global_pos[p*3]
+						StripSplinePt1 = ' '.join(map(str,np.array([x0_int,y0_int,0])))
+						p += 2
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt2 = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
+						p += 2
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt3 = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
+						p += 2
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt4 = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
+						p += 2
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt5 = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
+						p += 2
+						count += 1
+
+					elif count > 11:
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt1 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
+						p += 2
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt2 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
+						p += 2
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt3 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
+						p += 2
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt4 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
+						p += 2
+						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
+							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
+						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
+						StripSplinePt5 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
+						p += 2
+						count += 1
+
+					if count <= 3:
+						StripSplinePt1 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
+						p += 2
+						StripSplinePt2 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
+						p += 2
+						StripSplinePt3 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
+						p += 2
+						StripSplinePt4 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
+						p += 2
+						StripSplinePt5 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
+						p += 2
+						count += 1
+					elif count > 3 and count <= 7:
+						StripSplinePt1 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
+						p += 2
+						StripSplinePt2 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
+						p += 2
+						StripSplinePt3 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
+						p += 2
+						StripSplinePt4 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
+						p += 2
+						StripSplinePt5 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
+						p += 2
+						count += 1
+					s = s.replace(replaceline, 'spline '+ spline + '((' + StripSplinePt1 + ')(' + StripSplinePt2 + ')('+ \
+								  StripSplinePt3+')('+ StripSplinePt4 + ')('+ StripSplinePt5 + '))'+ findText + '\n')
+					f = open(Itpath+str(i+1)+"/NS/system/blockMeshDict", 'w')
+					f.write(s)
+					f.close()
+					index += 1
+					if count == 4 or count == 8 or count == 12:
+						p = 0
+					flagSpline = False
+
 		os.system('blockMesh')
 		os.system('checkMesh')
 		#ToDo: if checkmesh last but second line says mesh: ok, then execute next line
@@ -62,6 +178,8 @@ for i in range(2):
 	term = '[^(())\t\n ]+'
 	splitDoubleBraces = re.findall(term, lastline)
 	DragForceX      = float(splitDoubleBraces[1])+float(splitDoubleBraces[4])
+	
+	forceResultfile.write(str(i)+"\t"+str(DragForceX)+"\n")
 
 	f = fileinput.FileInput(Itpath+str(i+1)+'/OS/0/UAdj', inplace=True)
 	for line in f:
@@ -78,8 +196,11 @@ for i in range(2):
 	os.system('pisomosiFoam')
 
 	# Calculation of new boundary Coordinates
+	#TODO: to be read from the Transportproperties dictfile
 	nu = .01 # viscosity
-	weight = 0.0000006 # weight = 1/w
+
+	#TODO: to be updated to control the sudden jump of coordinates
+	weight =1 # weight = 1/w
 
 
 	word = []
@@ -115,9 +236,10 @@ for i in range(2):
 	indicesGraduAdj = [19,20,21,22,23,24,25,26,27]
 	indicesNormal = [28,29,30]
 
+	#TODO read variables 'lineSize' and 'nFaces' from blockMesh and polymesh data
 	lineSize = 31
 	nFaces = 40
-	outerLayer_t = .1
+	outerLayer_t = 1
 	#print(list(allitems[indexes]))
 	#indexes = list(np.asarray(indexes) + 31)
 	#print(indexes)
@@ -155,14 +277,25 @@ for i in range(2):
 		sym_GraduAdj = (gradUadj.reshape(3,3) + gradUadj.reshape(3,3).T)*nu
 
 		s = (u_Inner_uAdj + pAdj_Matrix + sym_GraduAdj).dot(normal.reshape(1,-1).T)
-		corrector = weight*gradU.reshape(3,3).T.dot(s)
+		corrector = gradU.reshape(3,3).T.dot(s)
 
 		global_Corrector=np.append(global_Corrector,corrector)
 		global_pos = np.append(global_pos,pos)
 	#print(np.inner(U,uAdj.T))
 	#print(U)
+	
+	while weight > 1e-8:
+		updated_global_pos = global_pos - weight*global_Corrector
+		withinTolFlag = np.allclose(updated_global_pos,global_Corrector,rtol=.1, atol=1e-08, equal_nan=False)
+		if not withinTolFlag:
+			weight = 0.1*weight
+		else:
+			break
+	print(weight)
+	UnitConversionFactor = 0.1 #TODO to be read from blockMeshDict file
 
-	updated_global_pos = global_pos - global_Corrector
+	updated_global_pos = updated_global_pos*1/UnitConversionFactor
+	#TODO include the below in a for loop
 	facepoint_0 = np.array([updated_global_pos[0],updated_global_pos[1],0])
 	facepoint_1 = np.array([updated_global_pos[1*3],updated_global_pos[1*3+1],0])
 	facepoint_9 = np.array([updated_global_pos[9*3],updated_global_pos[9*3+1],0])
@@ -218,17 +351,19 @@ for i in range(2):
 	Vertices = np.vstack([Vertices,Vertex_9])
 	Vertices = np.vstack([Vertices,Vertex_10])
 	Vertices = np.vstack([Vertices,Vertex_11])
-
-	zOffsetMatrix = np.array([[0,0,0.01],[0,0,0.01]])
+	
+	zOffset = 0.1
+	
+	zOffsetMatrix = np.array([[0,0,zOffset],[0,0,zOffset]])
 	for l in range(len(Vertices)-2):
-		zOffsetMatrix = np.vstack([zOffsetMatrix,np.array([0,0,0.01])])
+		zOffsetMatrix = np.vstack([zOffsetMatrix,np.array([0,0,zOffset])])
 	Vertices = np.vstack([Vertices,Vertices+zOffsetMatrix])
-	Vertices = Vertices*10
+	Vertices = Vertices
 
 	os.chdir(Modpath)
 	cwd = os.getcwd()
 	
-
+forceResultfile.close()
 
 
 
