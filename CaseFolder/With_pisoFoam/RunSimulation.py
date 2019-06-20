@@ -16,6 +16,15 @@ DragInitialX = 1
 forceResultfile = open("DragForce.dat","w+")
 forceResultfile.write("Iteration\tDragForce\n")
 
+# Reading nu from Reference/transportProperties
+transport_property = open('Reference/NS/constant/transportProperties','r')
+for line in transport_property:
+	if 'nu' in line:
+		term = '[^;(())\t\n ]+'
+		splitline = re.findall(term, line)
+		break
+nu = float(splitline[8])
+
 for i in range(2):
 	if Path(Itpath+str(i+1)).exists() == False:
 		os.mkdir('Iteration_'+str(i+1))
@@ -151,8 +160,8 @@ for i in range(2):
 	os.system('pisomosiFoam')
 
 	# Calculation of new boundary Coordinates
-	#TODO: to be read from the Transportproperties dictfile
-	nu = .01 # viscosity
+	#TODO=====> DONE <======: to be read from the Transportproperties dictfile
+	#nu = .01 # viscosity =====> Added above : read only once from Reference
 
 	#TODO: to be updated to control the sudden jump of coordinates
 	weight =1 # weight = 1/w
