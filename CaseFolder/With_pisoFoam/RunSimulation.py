@@ -240,7 +240,7 @@ for i in range(2):
 	
 	while weight > 1e-8:
 		updated_global_pos = global_pos - weight*global_Corrector
-		withinTolFlag = np.allclose(updated_global_pos,global_Corrector,rtol=.1, atol=1e-08, equal_nan=False)
+		withinTolFlag = np.allclose(updated_global_pos,global_pos,rtol=.1, atol=1e-08, equal_nan=False)
 		if not withinTolFlag:
 			weight = 0.1*weight
 		else:
