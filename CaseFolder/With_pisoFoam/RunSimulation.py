@@ -6,7 +6,7 @@ from pathlib import Path
 import os, re, sys, math, fileinput
 
 #Path Definitions
-Modpath     = '/home/aju/Seminar/With_pisoFoam'
+Modpath     = os.getcwd()
 Refpath     = Modpath+'/Reference'
 Itpath      = Modpath+'/Iteration_'
 NSpath      = Refpath+'/NS'
@@ -16,10 +16,9 @@ DragInitialX = 1
 forceResultfile = open("DragForce.dat","w+")
 forceResultfile.write("Iteration\tDragForce\n")
 
-for i in range(2):
+for i in range(100):
 	if Path(Itpath+str(i+1)).exists() == False:
 		os.mkdir('Iteration_'+str(i+1))
-		print('Iteration_'+str(i+1)+'Directory Created')
 	os.system('cp -r '+Refpath+'/* '+Itpath+str(i+1))
 	os.chdir(Itpath+str(i+1)+'/NS')
 
@@ -70,9 +69,9 @@ for i in range(2):
 					f.close()
 					index = index + 1
 					flag = False
-
-			p = 0
+			end = 10
 			count = 0
+			p = 0
 			for spline in splineList:
 				f = open(Itpath + str(i + 1) + "/NS/system/blockMeshDict", "r")
 				for line in f:
@@ -82,104 +81,50 @@ for i in range(2):
 						flagSpline = True
 				f.close()
 
+				StripSplinePtList = []
 				if flagSpline == True:
 					s = open(Itpath+str(i+1)+"/NS/system/blockMeshDict").read()
-					if count > 7 and count <= 11:
-						x0_int = updated_global_pos[p*3]*(outerLayer_t + math.sqrt(updated_global_pos[p*3+1]**2+updated_global_pos[p*3]**2))/math.sqrt(updated_global_pos[p*3+1]**2+updated_global_pos[p*3]**2)
-						y0_int = updated_global_pos[p*3+1] * x0_int / updated_global_pos[p*3]
-						StripSplinePt1 = ' '.join(map(str,np.array([x0_int,y0_int,0])))
-						p += 2
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt2 = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
-						p += 2
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt3 = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
-						p += 2
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt4 = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
-						p += 2
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt5 = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
-						p += 2
-						count += 1
-
-					elif count > 11:
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt1 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
-						p += 2
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt2 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
-						p += 2
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt3 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
-						p += 2
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt4 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
-						p += 2
-						x0_int = updated_global_pos[p * 3] * (outerLayer_t + math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)) / math.sqrt(
-							updated_global_pos[p * 3 + 1] ** 2 + updated_global_pos[p * 3] ** 2)
-						y0_int = updated_global_pos[p * 3 + 1] * x0_int / updated_global_pos[p * 3]
-						StripSplinePt5 = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
-						p += 2
-						count += 1
-
 					if count <= 3:
-						StripSplinePt1 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
-						p += 2
-						StripSplinePt2 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
-						p += 2
-						StripSplinePt3 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
-						p += 2
-						StripSplinePt4 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
-						p += 2
-						StripSplinePt5 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
-						p += 2
-						count += 1
+						while p < end:
+							StripSplinePt = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
+							StripSplinePtList.append(StripSplinePt)
+							p += 2
 					elif count > 3 and count <= 7:
-						StripSplinePt1 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
-						p += 2
-						StripSplinePt2 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
-						p += 2
-						StripSplinePt3 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
-						p += 2
-						StripSplinePt4 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
-						p += 2
-						StripSplinePt5 = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
-						p += 2
-						count += 1
-					s = s.replace(replaceline, 'spline '+ spline + '((' + StripSplinePt1 + ')(' + StripSplinePt2 + ')('+ \
-								  StripSplinePt3+')('+ StripSplinePt4 + ')('+ StripSplinePt5 + '))'+ findText + '\n')
+						while p < end:
+							StripSplinePt = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
+							StripSplinePtList.append(StripSplinePt)
+							p += 2
+					elif count > 7 and count <= 11:
+						while p < end:
+							x0_int = updated_global_pos[p*3] * (outerLayer_t + math.sqrt(
+								updated_global_pos[p*3+1]**2 + updated_global_pos[p*3]**2)) / math.sqrt(
+								updated_global_pos[p*3+1]**2 + updated_global_pos[p*3]**2)
+							y0_int = updated_global_pos[p*3+1] * x0_int / updated_global_pos[p*3]
+							StripSplinePt = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
+							StripSplinePtList.append(StripSplinePt)
+							p += 2
+					elif count > 11:
+						while p < end:
+							x0_int = updated_global_pos[p*3] * (outerLayer_t + math.sqrt(
+								updated_global_pos[p*3+1]**2 + updated_global_pos[p*3]**2)) / math.sqrt(
+								updated_global_pos[p*3+1]**2 + updated_global_pos[p*3]**2)
+							y0_int = updated_global_pos[p*3+1] * x0_int / updated_global_pos[p*3]
+							StripSplinePt = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
+							StripSplinePtList.append(StripSplinePt)
+							p += 2
+					count += 1
+					end += 10
+
+					s = s.replace(replaceline,
+								  'spline ' + spline + '((' + StripSplinePtList[0] + ')(' + StripSplinePtList[1] + ')(' + \
+								  StripSplinePtList[2] + ')(' + StripSplinePtList[3] + ')(' + StripSplinePtList[4] + '))' + findText + '\n')
 					f = open(Itpath+str(i+1)+"/NS/system/blockMeshDict", 'w')
 					f.write(s)
 					f.close()
 					index += 1
 					if count == 4 or count == 8 or count == 12:
 						p = 0
+						end = 10
 					flagSpline = False
 
 		os.system('blockMesh')
@@ -226,12 +171,8 @@ for i in range(2):
 
 	word = []
 	with open (Itpath+str(i+1)+'/OS/BoundaryResults.txt') as file:
-	#lines = file.readlines()
 		for line in file:
-		#line = line.split(' ')
 			word.append(re.findall(r'[^(())\t\n ]+',line))
-
-	#print(word)
 	del word[0]
 
 
@@ -261,17 +202,11 @@ for i in range(2):
 	lineSize = 31
 	nFaces = 40
 	outerLayer_t = 1
-	#print(list(allitems[indexes]))
-	#indexes = list(np.asarray(indexes) + 31)
-	#print(indexes)
-	#print(list(allitems[indexes]))
 
 	global_Corrector = np.array([])
 	global_pos = np.array([])
 
 	for k in range(0,nFaces):
-	#print(list(allitems[indicespos = [0,1,2]]))
-	#indexes = list(np.asarray(indexes) + 31)
 		pos = np.array(list(allitems[indicespos]))
 		indicespos = list(np.asarray(indicespos) + lineSize)
 
@@ -302,8 +237,6 @@ for i in range(2):
 
 		global_Corrector=np.append(global_Corrector,corrector)
 		global_pos = np.append(global_pos,pos)
-	#print(np.inner(U,uAdj.T))
-	#print(U)
 	
 	while weight > 1e-8:
 		updated_global_pos = global_pos - weight*global_Corrector
@@ -350,9 +283,6 @@ for i in range(2):
 	
 	x_Vertex_9 = Vertex_8[0]*(1+outerLayer_t/math.sqrt((Vertex_8[1])**2 +(Vertex_8[0])**2 ))
 	Vertex_9 = np.array([x_Vertex_9,Vertex_8[1]/Vertex_8[0]*x_Vertex_9,0])
-	
-	
-	
 
 	if Vertex_6[0]!=0:
 			x_Vertex_7 = Vertex_6[0]*(1+outerLayer_t/math.sqrt((Vertex_6[1])**2 +(Vertex_6[0])**2 ))
@@ -395,15 +325,5 @@ for i in range(2):
 	boundaryVertices = np.vstack([boundaryVertices,boundaryVertices+zOffsetMatrix])
 
 	os.chdir(Modpath)
-	cwd = os.getcwd()
 	
 forceResultfile.close()
-
-
-
-
-
-
-
-
-
