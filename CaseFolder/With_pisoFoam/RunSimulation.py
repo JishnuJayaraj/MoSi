@@ -16,7 +16,7 @@ DragInitialX = 1
 forceResultfile = open("DragForce.dat","w+")
 forceResultfile.write("Iteration\tDragForce\n")
 
-for i in range(100):
+for i in range(2):
 	if Path(Itpath+str(i+1)).exists() == False:
 		os.mkdir('Iteration_'+str(i+1))
 	os.system('cp -r '+Refpath+'/* '+Itpath+str(i+1))
@@ -84,37 +84,26 @@ for i in range(100):
 				StripSplinePtList = []
 				if flagSpline == True:
 					s = open(Itpath+str(i+1)+"/NS/system/blockMeshDict").read()
-					if count <= 3:
+					if count <= (np.size(splineList)/4)-1 or count >= (np.size(splineList)/2) and count < np.size(splineList)*3/4:
+						zVal = 0
+					else:
+						zVal = 0.1
+					if count < (np.size(splineList)/2):
 						while p < end:
-							StripSplinePt = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0])))
+							StripSplinePt = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],zVal])))
 							StripSplinePtList.append(StripSplinePt)
 							p += 2
-					elif count > 3 and count <= 7:
-						while p < end:
-							StripSplinePt = ' '.join(map(str,np.array([updated_global_pos[p*3],updated_global_pos[p*3+1],0.1])))
-							StripSplinePtList.append(StripSplinePt)
-							p += 2
-					elif count > 7 and count <= 11:
+					else:
 						while p < end:
 							x0_int = updated_global_pos[p*3] * (outerLayer_t + math.sqrt(
 								updated_global_pos[p*3+1]**2 + updated_global_pos[p*3]**2)) / math.sqrt(
 								updated_global_pos[p*3+1]**2 + updated_global_pos[p*3]**2)
 							y0_int = updated_global_pos[p*3+1] * x0_int / updated_global_pos[p*3]
-							StripSplinePt = ' '.join(map(str, np.array([x0_int, y0_int, 0])))
-							StripSplinePtList.append(StripSplinePt)
-							p += 2
-					elif count > 11:
-						while p < end:
-							x0_int = updated_global_pos[p*3] * (outerLayer_t + math.sqrt(
-								updated_global_pos[p*3+1]**2 + updated_global_pos[p*3]**2)) / math.sqrt(
-								updated_global_pos[p*3+1]**2 + updated_global_pos[p*3]**2)
-							y0_int = updated_global_pos[p*3+1] * x0_int / updated_global_pos[p*3]
-							StripSplinePt = ' '.join(map(str, np.array([x0_int, y0_int, 0.1])))
+							StripSplinePt = ' '.join(map(str, np.array([x0_int, y0_int, zVal])))
 							StripSplinePtList.append(StripSplinePt)
 							p += 2
 					count += 1
 					end += 10
-
 					s = s.replace(replaceline,
 								  'spline ' + spline + '((' + StripSplinePtList[0] + ')(' + StripSplinePtList[1] + ')(' + \
 								  StripSplinePtList[2] + ')(' + StripSplinePtList[3] + ')(' + StripSplinePtList[4] + '))' + findText + '\n')
@@ -122,7 +111,7 @@ for i in range(100):
 					f.write(s)
 					f.close()
 					index += 1
-					if count == 4 or count == 8 or count == 12:
+					if count == (np.size(splineList)/4) or count == (np.size(splineList)/2) or count == np.size(splineList)*3/4:
 						p = 0
 						end = 10
 					flagSpline = False
