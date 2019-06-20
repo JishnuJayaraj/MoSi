@@ -198,9 +198,20 @@ for i in range(100):
 	indicesGraduAdj = [19,20,21,22,23,24,25,26,27]
 	indicesNormal = [28,29,30]
 
-	#TODO read variables 'lineSize' and 'nFaces' from blockMesh and polymesh data
-	lineSize = 31
-	nFaces = 40
+	lineSize = len(indicespos)+len(indicesU)+len(indicesPadj)+len(indicesUadj)+len(indicesGradu)+len(indicesGraduAdj) +len(indicesNormal)
+	
+	boundaryFile = open(Itpath+str(i+1)+'/NS/constant/polyMesh/boundary','r')
+	boundaryFound = False
+	for line in boundaryFile:
+		if 'subBoundary' in line:
+			boundaryFound = True
+		if boundaryFound:
+			if 'nFaces' in line:
+				term = '[^;(())\t\n ]+'
+				splitline = re.findall(term, line)
+				break
+	nFaces = int(splitline[1])
+
 	outerLayer_t = 1
 
 	global_Corrector = np.array([])
