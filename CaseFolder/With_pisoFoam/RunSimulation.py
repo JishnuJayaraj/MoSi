@@ -148,8 +148,9 @@ for i in range(100):
 	splitDoubleBraces = re.findall(term, lastline)
 	DragForceX      = float(splitDoubleBraces[1])+float(splitDoubleBraces[4])
 	print('Iter-'+str(i+1)+': Writing drag force to file..!')
+	
 	forceResultfile.write(str(i)+"\t"+str(DragForceX)+"\n")
-
+	
 	f = fileinput.FileInput(Itpath+str(i+1)+'/OS/0/UAdj', inplace=True)
 	for line in f:
 		findText = 'value           uniform (1 0 0);'
@@ -257,10 +258,11 @@ for i in range(100):
 
 		global_Corrector=np.append(global_Corrector,corrector)
 		global_pos = np.append(global_pos,pos)
-	minWeight = 1e-8
+	minWeight = 1e-5
+	tol = 0.001
 	while weight > minWeight:
 		updated_global_pos = global_pos - weight*global_Corrector
-		withinTolFlag = np.allclose(updated_global_pos,global_pos,rtol=.1, atol=1e-08, equal_nan=False)
+		withinTolFlag = np.allclose(updated_global_pos,global_pos,rtol=tol, atol=1e-08, equal_nan=False)
 		if not withinTolFlag:
 			weight = 0.1*weight
 		else:
@@ -269,6 +271,18 @@ for i in range(100):
 		print('Weight used: '+str(weight/0.1))
 	else:
 		print('Weight used: '+str(weight))
+
+	# Constraining the updation of coordinates
+	coordCount = 0
+	for coordindex in range (len(updated_global_pos)):
+		if updated_global_pos[coordindex] > (global_pos[coordindex]*(1+tol)):
+			coordCount = coordCount +1
+			updated_global_pos[coordindex] = (global_pos[coordindex]*(1+tol))
+		elif updated_global_pos[coordindex] < (global_pos[coordindex]*(1-tol)):
+			coordCount = coordCount +1
+			updated_global_pos[coordindex] = (global_pos[coordindex]*(1-tol))
+	print(str(coordCount)+' Coordinates constrained back to the tolerance limit '+str(tol))
+
 	UnitConversionFactor = 0.1 #TODO to be read from blockMeshDict file
 
 	updated_global_pos = updated_global_pos*1/UnitConversionFactor
