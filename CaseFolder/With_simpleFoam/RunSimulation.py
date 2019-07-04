@@ -145,9 +145,13 @@ for i in range(700):
         else:
                 print('Block Mesh Dictionary is not available')
                 sys.exit(1)
-
-        os.system('cp '+Itpath+str(i+1)+'/NS/2.5/p '+Itpath+str(i+1)+'/OS/0')
-        os.system('cp '+Itpath+str(i+1)+'/NS/2.5/U '+Itpath+str(i+1)+'/OS/0')
+        endTimeNS = '0'
+        for directory in (Itpath+str(i+1)+"/NS"):
+	        if directory.replace('.','',1).isdigit():
+		        if float(endTimeNS) < float(directory):
+			        endTimeNS = directory
+        os.system('cp '+Itpath+str(i+1)+'/NS/'+endTimeNS+'/p '+Itpath+str(i+1)+'/OS/0')
+        os.system('cp '+Itpath+str(i+1)+'/NS/'+endTimeNS+'/U '+Itpath+str(i+1)+'/OS/0')
         
         dragForceFile   = open(Itpath+str(i+1)+'/NS/postProcessing/forces/0/forces.dat','r')
         lastline        = dragForceFile.readlines()
