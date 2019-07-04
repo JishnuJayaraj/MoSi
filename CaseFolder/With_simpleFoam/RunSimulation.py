@@ -146,10 +146,12 @@ for i in range(700):
                 print('Block Mesh Dictionary is not available')
                 sys.exit(1)
         endTimeNS = '0'
-        for directory in (Itpath+str(i+1)+"/NS"):
+        iterationNSFolder = os.listdir(Itpath+str(i+1)+'/NS')
+        for directory in iterationNSFolder:
 	        if directory.replace('.','',1).isdigit():
 		        if float(endTimeNS) < float(directory):
-			        endTimeNS = directory
+			        endTimeNS = str(directory)
+        
         os.system('cp '+Itpath+str(i+1)+'/NS/'+endTimeNS+'/p '+Itpath+str(i+1)+'/OS/0')
         os.system('cp '+Itpath+str(i+1)+'/NS/'+endTimeNS+'/U '+Itpath+str(i+1)+'/OS/0')
         
