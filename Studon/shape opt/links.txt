@@ -1,9 +1,0 @@
- https://pavanakumar.github.io/compressibleFoam/_downloads/week_1_day_2.pdf
- 
- https://www.cfd-online.com/Forums/openfoam-solving/59470-extracting-cell-index-x-y-z-coordinates.html
- 
- https://www.cfd-online.com/Forums/openfoam-programming-development/105812-how-access-field-point-data.html
- 
- https://www.cfd-online.com/Forums/openfoam-post-processing/117844-probe-line.html
- 
- https://www.cfd-online.com/Forums/openfoam-solving/59523-probe-x-y-velocity.html
