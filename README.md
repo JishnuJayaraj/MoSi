@@ -8,15 +8,15 @@ First solve the NS equation(NS folder) to get the u and p, then use this to comp
 openfoam6 is used for solving
 
 1) compile the 'pisomosiFoam' solver
-		'''python
+		
 	  wclean
 	  wmake
-	  '''
+	  
 2) define the case in 'Reference' folder(NS/system/blockMesh), if the shape needed to be changed
 
 3) run the 'Runsimulation.py' code to run the simulation. 
-	'''python
+	
 	  python3 Runsimulation.py
-	  '''
+	
 	
    this runs the simulation and store the drag force value of each iteration in 'DragForce.dat'
