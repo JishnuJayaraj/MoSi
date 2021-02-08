@@ -23,5 +23,5 @@ openfoam6 is used for solving
    
    
    <p align="center">
-  <img src="https://github.com/JishnuJayaraj/MoSi/images/result" width="350" title="hover text">
+  <img src="images\result.png" width="350" title="hover text">
   </p>
