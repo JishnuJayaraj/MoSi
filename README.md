@@ -20,3 +20,8 @@ openfoam6 is used for solving
 	
 	
    this runs the simulation and store the drag force value of each iteration in 'DragForce.dat'
+   
+   
+   <p align="center">
+  <img src="https://github.com/JishnuJayaraj/MoSi/images/result" width="350" title="hover text">
+  </p>
