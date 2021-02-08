@@ -22,6 +22,26 @@ openfoam6 is used for solving
    this runs the simulation and store the drag force value of each iteration in 'DragForce.dat'
    
    
+   The domain used for simulatin is represented below.
+   
+     <p align="center">
+  <img src="images\domain.png" title="hover text">
+  </p>
+  
+  The algorithm used for shape optimization is shown below
+  
+    <p align="center">
+  <img src="images\algorithms.png" title="hover text">
+  </p>
+  
+  The direction of optimization in broader sense is shown as frictinal force components
+  
+    <p align="center">
+  <img src="images\optimization.png" title="hover text">
+  </p>
+   
+   The final result for optimizing a spherical ball is shown below
+   
    <p align="center">
   <img src="images\result.png" title="hover text">
   </p>
